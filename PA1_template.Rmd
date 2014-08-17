@@ -1,20 +1,52 @@
-# Reproducible Research: Peer Assessment 1
+---
+title: "PA1_template.Rmd"
+author: "Frantz Woldy  Amazan"
+date: "17/08/2014"
+output: html_document
+---
 
+### Loadding data and converting date to date Class
 
-## Loading and preprocessing the data
+```{r, echo=TRUE}
+library(lattice)
 
+rawData <- read.csv("activity.csv")
+rawData$date <- as.Date(rawData$date, format="%Y-%m-%d")
+```
+* Ploting the steps
 
+```{r, echo=TRUE}
+histogram(~steps| date, data=rawData)
+```
 
-## What is mean total number of steps taken per day?
+* Calculating the mean and median
 
+```{r, echo=TRUE}
+singleDate <- unique(rawData$date)
 
+meanSingle <-c()
+medianSingle <- c()
 
-## What is the average daily activity pattern?
+for(date in singleDate)
+{
+  meanSingle <-c(meanSingle,mean(rawData[rawData$date == date, 1], na.rm=TRUE))
+  medianSingle <-c(medianSingle,median(rawData[rawData$date == date, 1], na.rm=TRUE))
+}
 
+meanSingle <- meanSingle[!is.na(meanSingle)]
+medianSingle <- medianSingle[!is.na(medianSingle)]
+```
+The mean per day is `meanSingle` and teh meadian `medianSingle`.
 
+```{r, echo=TRUE}
+ xyplot(steps ~ interval | date, data = rawData, type="l")
+```
+*The number of missig values:
+```{r, echo=TRUE}
+rawData[max(rawData$steps, na.rm=TRUE), ]
 
-## Imputing missing values
+missval <- rawData$steps[is.na(rawData$steps)]
 
+length(missval)
 
-
-## Are there differences in activity patterns between weekdays and weekends?
+```
